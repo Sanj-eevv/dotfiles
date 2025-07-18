@@ -1,5 +1,4 @@
 -- Syntax highlighting
-
 return {
   'nvim-treesitter/nvim-treesitter',
   event = 'VeryLazy',
@@ -7,7 +6,6 @@ return {
     require('nvim-treesitter.install').update({ with_sync = true })
   end,
   dependencies = {
-    { 'nvim-treesitter/playground', cmd = "TSPlaygroundToggle" },
     {
       'JoosepAlviste/nvim-ts-context-commentstring',
       opts = {
@@ -24,11 +22,6 @@ return {
           -- }
         },
         custom_calculation = function (node, language_tree)
-          -- print(language_tree:lang())
-          -- print(node:type())
-          print(vim.bo.filetype)
-          print(language_tree._lang)
-          print('----')
           if vim.bo.filetype == 'blade' then
             if language_tree._lang == 'html' then
               return '{{-- %s --}}'
@@ -36,9 +29,6 @@ return {
               return '// %s'
             end
           end
-          -- if vim.bo.filetype == 'blade' and language_tree._lang ~= 'javascript' and language_tree._lang ~= 'php' then
-          --   return '{{-- %s --}}'
-          -- end
         end,
       },
     },
@@ -47,7 +37,6 @@ return {
   main = 'nvim-treesitter.configs',
   opts = {
     ensure_installed = {
-      'arduino',
       'bash',
       'blade',
       'comment',
@@ -111,7 +100,6 @@ return {
   },
   config = function (_, opts)
     local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
-
     parser_config.blade = {
       install_info = {
         url = "https://github.com/EmranMR/tree-sitter-blade",
@@ -120,13 +108,11 @@ return {
       },
       filetype = "blade"
     }
-
     vim.filetype.add({
       pattern = {
         ['.*%.blade%.php'] = 'blade',
       },
     })
-
     require('nvim-treesitter.configs').setup(opts)
   end,
 }

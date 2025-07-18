@@ -1,3 +1,3 @@
--- Indent autodetection with ediotrconfig support.
-
-return { 'tpope/vim-sleuth' }
+return {
+'tpope/vim-sleuth'
+}

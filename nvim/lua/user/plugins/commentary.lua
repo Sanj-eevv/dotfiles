@@ -1,4 +1,4 @@
-
+-- GCC for commentary
 return {
   'tpope/vim-commentary',
   config = function()

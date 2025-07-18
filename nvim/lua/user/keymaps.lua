@@ -9,11 +9,16 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>Q', ':bufdo bdelete<CR>')
 
 -- Diagnostics.
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [d]iagnostic' })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [d]iagnostic' })
+vim.keymap.set('n', '[d', function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = 'Go to prev [d]iagnostic' })
+
+vim.keymap.set('n', '[d', function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = 'Go to next [d]iagnostic' })
 
 -- Allow gf to open non-existent files.
-vim.keymap.set('', 'gf', ':edit <cfile><CR>')
+-- vim.keymap.set('', 'gf', ':edit <cfile><CR>')
 
 -- Reselect visual selection after indenting.
 vim.keymap.set('v', '<', '<gv')
@@ -31,12 +36,17 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true })
 -- Paste replace visual selection without copying it.
 vim.keymap.set('v', 'p', '"_dP')
 
+-- copy file path
+vim.keymap.set('n', '<leader>cp', function()
+	vim.fn.setreg('+', vim.fn.expand('%:p'))
+end, { desc = 'Copy full file path to clipboard' })
+
 -- Reselect pasted text
 -- vim.keymap.set('n', 'p', 'p`[v`]')
 
 -- Easy insertion of a trailing ; or , from insert mode.
-vim.keymap.set('i', ';;', '<Esc>A;<Esc>')
-vim.keymap.set('i', ',,', '<Esc>A,<Esc>')
+-- vim.keymap.set('i', ';;', '<Esc>A;<Esc>')
+-- vim.keymap.set('i', ',,', '<Esc>A,<Esc>')
 
 -- Open the current file in the default program (on Mac this should just be just `open`).
 vim.keymap.set('n', '<leader>x', ':!xdg-open %<cr><cr>')
@@ -58,10 +68,6 @@ vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>')
 -- vim.keymap.set('v', '<A-j>', ":move '>+1<CR>gv=gv")
 -- vim.keymap.set('v', '<A-k>', ":move '<-2<CR>gv=gv")
 
--- switching buffer
-vim.keymap.set('n', '<Tab>', ':bn<CR>')
-vim.keymap.set('n', '<S-Tab>', ':bp<CR>')
 
 -- redo
 vim.keymap.set('n', 'U', '<C-r>')
-
