@@ -16,15 +16,19 @@ return {
     })
     require('mason-lspconfig').setup({ automatic_installation = true })
     -- PHP
-    require('lspconfig').intelephense.setup({
-      commands = {
-        IntelephenseIndex = {
-          function()
-            vim.lsp.buf.execute_command({ command = 'intelephense.index.workspace' })
-          end,
-        },
-      },
-    })
+    require('lspconfig').intelephense.setup({})
+    vim.api.nvim_create_user_command('IntelephenseIndex', function()
+      vim.notify("Starting Intelephense workspace indexing...", vim.log.levels.INFO, { title = "Intelephense" })
+      vim.lsp.buf_request(0, 'workspace/executeCommand', {
+        command = 'intelephense.index.workspace'
+      }, function(err, result)
+        if err then
+          vim.notify("Indexing failed: " .. tostring(err), vim.log.levels.ERROR, { title = "Intelephense" })
+        else
+          vim.notify("Workspace indexing completed!", vim.log.levels.INFO, { title = "Intelephense" })
+        end
+      end)
+    end, { desc = "Reindex Intelephense workspace" })
 
     -- Vue, JavaScript, TypeScript
     require('lspconfig').volar.setup({
@@ -33,7 +37,6 @@ return {
         client.server_capabilities.documentRangeFormattingProvider = false
       end,
     })
-
     require('lspconfig').ts_ls.setup({
       init_options = {
         plugins = {
@@ -71,18 +74,24 @@ return {
     require('lspconfig').lua_ls.setup({
       settings = {
         Lua = {
-          runtime = { version = 'LuaJIT' },
+          runtime = {
+            version = 'LuaJIT',
+            globals = { 'vim' },
+          },
+          diagnostics = {
+            globals = { 'vim' },
+            disable = { 'missing-fields' },
+          },
           workspace = {
             checkThirdParty = false,
-            library = {
-              '${3rd}/luv/library',
-              unpack(vim.api.nvim_get_runtime_file('', true)),
-            },
-          }
+            library = vim.api.nvim_get_runtime_file('', true),
+          },
+          telemetry = {
+            enable = false,
+          },
         }
       }
     })
-
     vim.keymap.set('n', '<Leader>d', '<cmd>lua vim.diagnostic.open_float()<CR>')
     vim.keymap.set('n', 'gd', ':Telescope lsp_definitions<CR>')
     vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
@@ -94,7 +103,7 @@ return {
 
     -- Diagnostic configuration
     vim.diagnostic.config({
-      virtual_text = false,
+      virtual_text = true,
       float = {
         source = true,
       }

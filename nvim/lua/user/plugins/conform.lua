@@ -7,7 +7,17 @@ return {
     {
       '<leader>cf',
       function()
-        require('conform').format({ async = true })
+        local conform = require('conform')
+        vim.notify("🔄 Formatting buffer...", vim.log.levels.INFO, { title = "Conform" })
+        conform.format({
+          async = true,
+        }, function(err)
+          if err then
+            vim.notify("❌ Format failed: " .. tostring(err), vim.log.levels.ERROR, { title = "Conform" })
+          else
+            vim.notify("✅ Buffer formatted successfully!", vim.log.levels.INFO, { title = "Conform" })
+          end
+        end)
       end,
       mode = "",
       desc = "Format current file",
@@ -19,8 +29,21 @@ return {
       javascript = { "eslint_d", stop_after_first = true },
       typescript = { "eslint_d", stop_after_first = true },
       typescriptreact = { "eslint_d", stop_after_first = true },
+      blade = { "blade_formatter" },
     },
     formatters = {
+      blade_formatter = {
+        meta = {
+          url = "https://github.com/shufo/blade-formatter",
+          description = "An opinionated blade template formatter for Laravel that respects readability.",
+        },
+        command = "blade-formatter",
+        args = { "--stdin" },
+        stdin = true,
+        cwd = function(self, ctx)
+          return require("conform.util").root_file({ "composer.json", "composer.lock" })(self, ctx)
+        end
+      },
       php_cs_fixer = {
         command = "./vendor/bin/php-cs-fixer",
         args = { "fix", "--quiet", "--using-cache=no", "$FILENAME" },
