@@ -38,7 +38,7 @@ return {
           description = "An opinionated blade template formatter for Laravel that respects readability.",
         },
         command = "blade-formatter",
-        args = { "--stdin" },
+        args = { "--stdin", "--no-multiple-empty-lines", "--wrap-attributes-min-attrs=4", "--wrap-line-length=220", "--wrap-attributes=force-aligned" },
         stdin = true,
         cwd = function(self, ctx)
           return require("conform.util").root_file({ "composer.json", "composer.lock" })(self, ctx)
