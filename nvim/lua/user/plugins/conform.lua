@@ -26,9 +26,17 @@ return {
   opts = {
     formatters_by_ft = {
       php = { "pint", "php_cs_fixer", lsp_format = "fallback" },
-      javascript = { "eslint_d", stop_after_first = true },
-      typescript = { "eslint_d", stop_after_first = true },
-      typescriptreact = { "eslint_d", stop_after_first = true },
+      javascript = { "prettier", "eslint_d", stop_after_first = true },
+      typescript = { "prettier", "eslint_d", stop_after_first = true },
+      typescriptreact = { "prettier", "eslint_d", stop_after_first = true },
+      javascriptreact = { "prettier", "eslint_d", stop_after_first = true },
+      vue = { "prettier", "eslint_d", stop_after_first = true },
+      css = { "prettier" },
+      scss = { "prettier" },
+      html = { "prettier" },
+      json = { "prettier" },
+      yaml = { "prettier" },
+      markdown = { "prettier" },
       blade = { "blade_formatter" },
     },
     formatters = {
@@ -38,7 +46,13 @@ return {
           description = "An opinionated blade template formatter for Laravel that respects readability.",
         },
         command = "blade-formatter",
-        args = { "--stdin", "--no-multiple-empty-lines", "--wrap-attributes-min-attrs=4", "--wrap-line-length=220", "--wrap-attributes=force-aligned" },
+        args = {
+          "--stdin",
+          "--no-multiple-empty-lines",
+          "--wrap-attributes-min-attrs=4",
+          "--wrap-line-length=220",
+          "--wrap-attributes=force-aligned"
+        },
         stdin = true,
         cwd = function(self, ctx)
           return require("conform.util").root_file({ "composer.json", "composer.lock" })(self, ctx)
@@ -57,13 +71,76 @@ return {
         end,
         require_cwd = true
       },
+      prettier = {
+        meta = {
+          url = "https://prettier.io/",
+          description = "An opinionated code formatter that supports many languages.",
+        },
+        command = "prettier",
+        args = { "--stdin-filepath", "$FILENAME" },
+        stdin = true,
+        cwd = function(self, ctx)
+          return require("conform.util").root_file({
+            ".prettierrc",
+            ".prettierrc.json",
+            ".prettierrc.yml",
+            ".prettierrc.yaml",
+            ".prettierrc.json5",
+            ".prettierrc.js",
+            ".prettierrc.cjs",
+            ".prettierrc.mjs",
+            ".prettierrc.toml",
+            "prettier.config.js",
+            "prettier.config.cjs",
+            "prettier.config.mjs",
+            "package.json"
+          })(self, ctx)
+        end,
+      },
+      eslint_d = {
+        meta = {
+          url = "https://github.com/mantoni/eslint_d.js/",
+          description = "Like ESLint, but faster.",
+        },
+        command = "eslint_d",
+        args = { "--fix-to-stdout", "--stdin", "--stdin-filename", "$FILENAME" },
+        stdin = true,
+        cwd = function(self, ctx)
+          return require("conform.util").root_file({
+            ".eslintrc.js",
+            ".eslintrc.cjs",
+            ".eslintrc.yaml",
+            ".eslintrc.yml",
+            ".eslintrc.json",
+            "eslint.config.js",
+            "eslint.config.mjs",
+            "eslint.config.cjs",
+            "package.json"
+          })(self, ctx)
+        end,
+      }
     },
     format_on_save = {
-      -- timeout_ms = 1000,
+      timeout_ms = 3000, -- Increased timeout for Vue files
       lsp_format = "fallback",
     },
   },
   config = function(_, opts)
     require("conform").setup(opts)
+
+    -- Create command for installing formatters
+    vim.api.nvim_create_user_command('ConformInstall', function()
+      vim.notify("Installing formatters...", vim.log.levels.INFO, { title = "Conform" })
+      vim.cmd("!npm install -g prettier eslint_d")
+      vim.notify("Formatters installed!", vim.log.levels.INFO, { title = "Conform" })
+    end, { desc = "Install required formatters" })
+
+    -- Vue-specific autocommands
+    vim.api.nvim_create_autocmd("FileType", {
+      pattern = "vue",
+      callback = function()
+        vim.bo.commentstring = "<!-- %s -->"
+      end,
+    })
   end,
 }

@@ -14,7 +14,24 @@ return {
         height = 0.8,
       },
     })
-    require('mason-lspconfig').setup({ automatic_installation = true })
+    require('mason-lspconfig').setup({
+      automatic_installation = true,
+      ensure_installed = {
+        'intelephense',
+        'volar',
+        'eslint',
+        'tailwindcss',
+        'jsonls',
+        'lua_ls',
+      }
+    })
+
+    -- Ensure proper file type detection for Vue files
+    vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
+      pattern = "*.vue",
+      command = "set filetype=vue"
+    })
+
     -- PHP
     require('lspconfig').intelephense.setup({})
     vim.api.nvim_create_user_command('IntelephenseIndex', function()
@@ -30,42 +47,46 @@ return {
       end)
     end, { desc = "Reindex Intelephense workspace" })
 
-    -- Vue, JavaScript, TypeScript
+    -- Vue.js (Simple configuration without TypeScript)
     require('lspconfig').volar.setup({
+      filetypes = { 'vue' },
       on_attach = function(client, bufnr)
         client.server_capabilities.documentFormattingProvider = false
         client.server_capabilities.documentRangeFormattingProvider = false
       end,
     })
-    require('lspconfig').ts_ls.setup({
-      init_options = {
-        plugins = {
-          {
-            name = "@vue/typescript-plugin",
-            location = "/usr/local/lib/node_modules/@vue/typescript-plugin",
-            languages = { "javascript", "typescript", "vue" },
-          },
-        },
-      },
-      filetypes = {
-        "javascript",
-        "javascriptreact",
-        "javascript.jsx",
-        "typescript",
-        "typescriptreact",
-        "typescript.tsx",
-        "vue",
-      },
+
+    -- ESLint for JavaScript linting in Vue and JS files
+    require('lspconfig').eslint.setup({
+      filetypes = { 'javascript', 'javascriptreact', 'vue' },
+      on_attach = function(client, bufnr)
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          buffer = bufnr,
+          command = "EslintFixAll",
+        })
+      end,
     })
 
     -- Tailwind CSS
-    require('lspconfig').tailwindcss.setup({})
+    require('lspconfig').tailwindcss.setup({
+      filetypes = {
+        "css",
+        "scss",
+        "sass",
+        "html",
+        "javascript",
+        "javascriptreact",
+        "vue",
+        "svelte",
+      },
+    })
 
     -- JSON
     require('lspconfig').jsonls.setup({
       settings = {
         json = {
           schemas = require('schemastore').json.schemas(),
+          validate = { enable = true },
         },
       },
     })
@@ -93,6 +114,7 @@ return {
       }
     })
 
+    -- Keymaps
     vim.keymap.set('n', '<Leader>d', '<cmd>lua vim.diagnostic.open_float()<CR>')
     vim.keymap.set('n', 'gd', ':Telescope lsp_definitions<CR>')
     vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
@@ -105,15 +127,31 @@ return {
     -- Diagnostic configuration
     vim.diagnostic.config({
       virtual_text = true,
+      signs = true,
+      underline = true,
+      update_in_insert = false,
+      severity_sort = false,
       float = {
         source = true,
+        border = 'rounded',
+        header = '',
+        prefix = '',
       }
     })
 
     -- Sign configuration
-    vim.fn.sign_define('DiagnosticSignError', { text = '', texthl = 'DiagnosticSignError' })
-    vim.fn.sign_define('DiagnosticSignWarn', { text = '', texthl = 'DiagnosticSignWarn' })
-    vim.fn.sign_define('DiagnosticSignInfo', { text = '', texthl = 'DiagnosticSignInfo' })
-    vim.fn.sign_define('DiagnosticSignHint', { text = '', texthl = 'DiagnosticSignHint' })
+    vim.fn.sign_define('DiagnosticSignError', { text = '', texthl = 'DiagnosticSignError' })
+    vim.fn.sign_define('DiagnosticSignWarn', { text = '', texthl = 'DiagnosticSignWarn' })
+    vim.fn.sign_define('DiagnosticSignInfo', { text = '', texthl = 'DiagnosticSignInfo' })
+    vim.fn.sign_define('DiagnosticSignHint', { text = '', texthl = 'DiagnosticSignHint' })
+
+    -- LSP handlers configuration
+    vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+      border = 'rounded',
+    })
+
+    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+      border = 'rounded',
+    })
   end,
 }
