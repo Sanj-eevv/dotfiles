@@ -71,3 +71,4 @@ vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>')
 
 -- redo
 vim.keymap.set('n', 'U', '<C-r>')
+

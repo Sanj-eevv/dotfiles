@@ -25,8 +25,17 @@ return {
       },
       lualine_b = {
         'branch',
-        function ()
-          return '󰅭 ' .. vim.pesc(tostring(#vim.tbl_keys(vim.lsp.get_clients())) or '')
+        function()
+          local clients = vim.lsp.get_clients({ bufnr = 0 })
+          local count = #clients
+          if count == 0 then
+            return '󰅭 0'
+          end
+          local names = {}
+          for _, client in ipairs(clients) do
+            table.insert(names, client.name)
+          end
+          return '󰅭 ' .. count .. ' (' .. table.concat(names, ', ') .. ')'
         end,
         { 'diagnostics', sources = { 'nvim_diagnostic' } },
       },
@@ -43,8 +52,6 @@ return {
       lualine_y = {
         'filetype',
         'encoding',
-        -- 'fileformat',
-        -- '(vim.bo.expandtab and "␠ " or "⇥ ") .. vim.bo.shiftwidth',
       },
       lualine_z = {
         'searchcount',

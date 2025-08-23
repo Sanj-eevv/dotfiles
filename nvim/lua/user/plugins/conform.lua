@@ -8,16 +8,9 @@ return {
       '<leader>cf',
       function()
         local conform = require('conform')
-        vim.notify("🔄 Formatting buffer...", vim.log.levels.INFO, { title = "Conform" })
         conform.format({
           async = true,
-        }, function(err)
-          if err then
-            vim.notify("❌ Format failed: " .. tostring(err), vim.log.levels.ERROR, { title = "Conform" })
-          else
-            vim.notify("✅ Buffer formatted successfully!", vim.log.levels.INFO, { title = "Conform" })
-          end
-        end)
+        })
       end,
       mode = "",
       desc = "Format current file",
@@ -25,7 +18,7 @@ return {
   },
   opts = {
     formatters_by_ft = {
-      php = { "pint", "php_cs_fixer", lsp_format = "fallback" },
+      php = { "php_cs_fixer", "pint", lsp_format = "fallback" },
       javascript = { "prettier", "eslint_d", stop_after_first = true },
       typescript = { "prettier", "eslint_d", stop_after_first = true },
       typescriptreact = { "prettier", "eslint_d", stop_after_first = true },
@@ -121,26 +114,11 @@ return {
       }
     },
     format_on_save = {
-      timeout_ms = 3000, -- Increased timeout for Vue files
+      timeout_ms = 3000,
       lsp_format = "fallback",
     },
   },
   config = function(_, opts)
     require("conform").setup(opts)
-
-    -- Create command for installing formatters
-    vim.api.nvim_create_user_command('ConformInstall', function()
-      vim.notify("Installing formatters...", vim.log.levels.INFO, { title = "Conform" })
-      vim.cmd("!npm install -g prettier eslint_d")
-      vim.notify("Formatters installed!", vim.log.levels.INFO, { title = "Conform" })
-    end, { desc = "Install required formatters" })
-
-    -- Vue-specific autocommands
-    vim.api.nvim_create_autocmd("FileType", {
-      pattern = "vue",
-      callback = function()
-        vim.bo.commentstring = "<!-- %s -->"
-      end,
-    })
   end,
 }
