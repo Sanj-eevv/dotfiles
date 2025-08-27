@@ -17,8 +17,6 @@ vim.keymap.set('n', '[d', function()
 	vim.diagnostic.jump({ count = 1, float = true })
 end, { desc = 'Go to next [d]iagnostic' })
 
--- Allow gf to open non-existent files.
--- vim.keymap.set('', 'gf', ':edit <cfile><CR>')
 
 -- Reselect visual selection after indenting.
 vim.keymap.set('v', '<', '<gv')
@@ -41,12 +39,6 @@ vim.keymap.set('n', '<leader>cp', function()
 	vim.fn.setreg('+', vim.fn.expand('%:p'))
 end, { desc = 'Copy full file path to clipboard' })
 
--- Reselect pasted text
--- vim.keymap.set('n', 'p', 'p`[v`]')
-
--- Easy insertion of a trailing ; or , from insert mode.
--- vim.keymap.set('i', ';;', '<Esc>A;<Esc>')
--- vim.keymap.set('i', ',,', '<Esc>A,<Esc>')
 
 -- Open the current file in the default program (on Mac this should just be just `open`).
 vim.keymap.set('n', '<leader>x', ':!xdg-open %<cr><cr>')
@@ -60,15 +52,5 @@ vim.keymap.set('n', '<C-Down>', ':resize -2<CR>')
 vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>')
 vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>')
 
--- Move text up and down
--- vim.keymap.set('i', '<A-j>', '<Esc>:move .+1<CR>==gi')
--- vim.keymap.set('i', '<A-k>', '<Esc>:move .-2<CR>==gi')
--- vim.keymap.set('n', '<A-j>', ':move .+1<CR>==')
--- vim.keymap.set('n', '<A-k>', ':move .-2<CR>==')
--- vim.keymap.set('v', '<A-j>', ":move '>+1<CR>gv=gv")
--- vim.keymap.set('v', '<A-k>', ":move '<-2<CR>gv=gv")
-
-
 -- redo
 vim.keymap.set('n', 'U', '<C-r>')
-
