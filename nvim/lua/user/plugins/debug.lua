@@ -1,54 +1,21 @@
 return {
     {
         "jay-babu/mason-nvim-dap.nvim",
-        dependencies = { "mfussenegger/nvim-dap" },
-        opts = {
-            ensure_installed = { "php-debug-adapter" },
-            automatic_installation = true,
-            handlers = {
-                function(config)
-                    require("mason-nvim-dap").default_setup(config)
-                end,
-                php = function(config)
-                    local dap = require("dap")
-                    dap.adapters.php = {
-                        type = "executable",
-                        command = "node",
-                        args = { vim.fn.stdpath("data") .. "/mason/packages/php-debug-adapter/extension/out/phpDebug.js" }
-                    }
-                    dap.configurations.php = {
-                        {
-                            type = "php",
-                            request = "launch",
-                            name = "Listen for Xdebug",
-                            port = 9003,
-                            pathMappings = {
-                            },
-                        },
-                        {
-                            type = "php",
-                            request = "launch",
-                            name = "Launch current script",
-                            program = "${file}",
-                            cwd = "${fileDirname}",
-                            runtimeArgs = { "-dxdebug.start_with_request=yes" },
-                            env = {
-                                XDEBUG_MODE = "debug,develop",
-                                XDEBUG_CONFIG = "client_port=9003",
-                            },
-                        },
-                    }
-                end,
-            },
+        dependencies = {
+            "williamboman/mason.nvim",
         },
+        config = function()
+            require("mason-nvim-dap").setup({
+                ensure_installed = { "php-debug-adapter" },
+                automatic_installation = true,
+                handlers = {},
+            })
+        end,
     },
     {
         "mfussenegger/nvim-dap",
         dependencies = {
             "jay-babu/mason-nvim-dap.nvim",
-            "rcarriga/nvim-dap-ui",
-            "theHamsta/nvim-dap-virtual-text",
-            "nvim-neotest/nvim-nio",
         },
         keys = {
             { "<F5>",       function() require("dap").continue() end,                                desc = "Debug: Continue" },
@@ -58,11 +25,53 @@ return {
             { "<leader>db", function() require("dap").toggle_breakpoint() end,                       desc = "Toggle Breakpoint" },
             { "<leader>dr", function() require("dap").repl.open() end,                               desc = "Open REPL" },
             { "<leader>du", function() require("dapui").toggle() end,                                desc = "Toggle DAP UI" },
-            { "<leader>dt", function() require("dapui").toggle() end,                                desc = "Toggle DAP UI" },
             { "<leader>dx", function() require("dap").terminate() end,                               desc = "Debug: Terminate Session" },
             { "<leader>dd", function() require("dap").disconnect({ terminateDebuggee = false }) end, desc = "Debug: Disconnect (keep process)" },
         },
         config = function()
+            local dap = require("dap")
+            dap.adapters.php = {
+                type = "executable",
+                command = "php-debug-adapter",
+                args = { vim.fn.stdpath("data") .. "/mason/packages/php-debug-adapter/extension/out/phpDebug.js" }
+            }
+            dap.configurations.php = {
+                {
+                    type = "php",
+                    request = "launch",
+                    name = "Listen for XDebug (Herd)",
+                    port = 9003,
+                    log = false,
+                    hostname = "127.0.0.1",
+                },
+                {
+                    type = "php",
+                    request = "launch",
+                    name = "Debug current script",
+                    program = "${file}",
+                    cwd = "${fileDirname}",
+                    port = 9003,
+                    env = {
+                        XDEBUG_CONFIG = "idekey=NVIM",
+                        XDEBUG_MODE = "debug,develop",
+                    }
+                },
+                {
+                    type = "php",
+                    request = "launch",
+                    name = "Debug Artisan Command",
+                    program = "${workspaceFolder}/artisan",
+                    args = function()
+                        local cmd = vim.fn.input("Artisan command: ")
+                        return vim.split(cmd, " ")
+                    end,
+                    cwd = "${workspaceFolder}",
+                    port = 9003,
+                    env = {
+                        XDEBUG_CONFIG = "idekey=NVIM"
+                    }
+                }
+            }
             local signs = {
                 DapBreakpoint          = "🔴",
                 DapBreakpointCondition = "🟡",

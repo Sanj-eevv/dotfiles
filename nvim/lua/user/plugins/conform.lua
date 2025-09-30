@@ -18,7 +18,7 @@ return {
   },
   opts = {
     formatters_by_ft = {
-      php = { "php_cs_fixer", "pint", lsp_format = "fallback" },
+      php = { "pint", "php_cs_fixer", lsp_format = "fallback" },
       javascript = { "prettier", "eslint_d", stop_after_first = true },
       typescript = { "prettier", "eslint_d", stop_after_first = true },
       typescriptreact = { "prettier", "eslint_d", stop_after_first = true },

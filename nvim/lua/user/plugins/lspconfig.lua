@@ -25,6 +25,7 @@ return {
         'lua_ls',
         'ts_ls',
         'vue_ls',
+        'gopls',
       },
       handlers = {
         function(server_name)
