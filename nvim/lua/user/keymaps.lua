@@ -1,4 +1,3 @@
--- Space is my leader.
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -13,17 +12,15 @@ vim.keymap.set('n', '[d', function()
 	vim.diagnostic.jump({ count = -1, float = true })
 end, { desc = 'Go to prev [d]iagnostic' })
 
-vim.keymap.set('n', '[d', function()
+vim.keymap.set('n', ']d', function()
 	vim.diagnostic.jump({ count = 1, float = true })
 end, { desc = 'Go to next [d]iagnostic' })
-
 
 -- Reselect visual selection after indenting.
 vim.keymap.set('v', '<', '<gv')
 vim.keymap.set('v', '>', '>gv')
 
 -- Maintain the cursor position when yanking a visual selection.
--- http://ddrscott.github.io/blog/2016/yank-without-jank/
 vim.keymap.set('v', 'y', 'myy`y')
 vim.keymap.set('v', 'Y', 'myY`y')
 
@@ -40,15 +37,15 @@ vim.keymap.set('n', '<leader>cp', function()
 end, { desc = 'Copy full file path to clipboard' })
 
 
--- Open the current file in the default program (on Mac this should just be just `open`).
-vim.keymap.set('n', '<leader>x', ':!xdg-open %<cr><cr>')
+-- Open the current file in the default program (on Linux this should just be just `xdg-open`).
+vim.keymap.set('n', '<leader>x', ':!open %<cr><cr>')
 
 -- Disable annoying command line thing.
 vim.keymap.set('n', 'q:', ':q<CR>')
 
 -- Resize with arrows.
-vim.keymap.set('n', '<C-Up>', ':resize +2<CR>')
-vim.keymap.set('n', '<C-Down>', ':resize -2<CR>')
+vim.keymap.set('n', '<C-S-Up>', ':resize +2<CR>')
+vim.keymap.set('n', '<C-S-Down>', ':resize -2<CR>')
 vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>')
 vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>')
 
