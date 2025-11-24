@@ -3,7 +3,7 @@ return {
   'voldikss/vim-floaterm',
   keys = {
     { '<F1>', ':FloatermToggle<CR>' },
-    { '<F1>', '<Esc>:FloatermToggle<CR>', mode = 'i' },
+    { '<F1>', '<Esc>:FloatermToggle<CR>',       mode = 'i' },
     { '<F1>', '<C-\\><C-n>:FloatermToggle<CR>', mode = 't' },
   },
   cmd = { 'FloatermToggle' },

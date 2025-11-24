@@ -1,12 +1,10 @@
 -- Color scheme
-
 return {
   'folke/tokyonight.nvim',
   lazy = false,
   priority = 1000,
   opts = { -- test
-    on_colors = function (colors)
-      local util = require('tokyonight.util')
+    on_colors = function(colors)
       colors.gitSigns = {
         add = colors.teal,
         change = colors.purple,
@@ -170,7 +168,7 @@ return {
       }
     end,
   },
-  config = function (plugin, opts)
+  config = function(plugin, opts)
     require('tokyonight').setup(opts)
 
     vim.cmd('colorscheme tokyonight')

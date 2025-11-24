@@ -15,7 +15,7 @@ return {
           php = '// %s',
         },
         custom_calculation = function(node, language_tree)
-          -- print(language_tree._lang)
+          print(language_tree._lang)
           if vim.bo.filetype == 'blade' then
             if language_tree._lang == 'html' then
               return '{{-- %s --}}'

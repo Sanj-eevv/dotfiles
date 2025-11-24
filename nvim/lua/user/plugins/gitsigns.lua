@@ -8,7 +8,7 @@ return {
     { 'gs', ':Gitsigns stage_hunk<CR>' },
     { 'gS', ':Gitsigns undo_stage_hunk<CR>' },
     { 'gp', ':Gitsigns preview_hunk<CR>' },
-    { 'gb', ':Gitsigns blame_line<CR>' },
+    { 'gB', ':Gitsigns blame_line<CR>' },
   },
   opts = {
     preview_config = {
@@ -17,8 +17,6 @@ return {
     current_line_blame = true,
     current_line_blame_opts = {
       virt_text = false,
-      virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
-      delay = 1000,
       ignore_whitespace = false,
     },
     signs = {
