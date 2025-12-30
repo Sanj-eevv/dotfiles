@@ -10,7 +10,11 @@ return {
     { '<leader>f',  function() require('telescope.builtin').find_files() end },
     { '<leader>F',  function() require('telescope.builtin').find_files({ no_ignore = true, prompt_title = 'All Files' }) end },
     { '<leader>b',  function() require('telescope.builtin').buffers() end },
-    { '<leader>er', function() require('telescope.builtin').oldfiles() end },
+    { '<leader>er', function() require('telescope.builtin').oldfiles({ cwd_only = true }) end },
+    { '<leader>d',  function() require('telescope.builtin').diagnostics({ bufnr = 0 }) end },
+    { '<leader>D',  function() require('telescope.builtin').diagnostics() end },
+    { '<leader>/',  function() require('telescope.builtin').current_buffer_fuzzy_find() end },
+    { '<leader>;',  function() require('telescope.builtin').resume() end },
     { '<leader>g', function()
       require('telescope').extensions.live_grep_args.live_grep_args({
         prompt_title = 'Grep Project',
@@ -74,8 +78,20 @@ return {
         live_grep_args = {
           mappings = {
             i = {
-              ["<C-k>"] = require("telescope-live-grep-args.actions").quote_prompt(),
+              ["<C-k>"] = function(prompt_bufnr)
+                local current_picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+                local prompt = current_picker:_get_prompt()
+                if prompt:match('^".*"$') then
+                  -- Remove quotes
+                  local unquoted = prompt:sub(2, -2)
+                  current_picker:set_prompt(unquoted)
+                else
+                  -- Add quotes
+                  current_picker:set_prompt('"' .. prompt .. '"')
+                end
+              end,
               ["<C-space>"] = actions.to_fuzzy_refine,
+              ["<C-i>"] = require("telescope-live-grep-args.actions").quote_prompt({ postfix = " --iglob " }), -- Add glob pattern
             },
           },
         },
@@ -92,6 +108,7 @@ return {
         },
         oldfiles = {
           prompt_title = 'History',
+          cwd_only = true,
         },
         lsp_references = {
           previewer = false,
@@ -102,6 +119,9 @@ return {
         lsp_document_symbols = {
           symbol_width = 55,
         },
+        resume = {
+          prompt_title = "Resume Last Screen"
+        }
       },
     })
     require('telescope').load_extension('fzf')
