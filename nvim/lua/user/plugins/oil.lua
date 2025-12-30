@@ -1,13 +1,14 @@
 return {
   "stevearc/oil.nvim",
-  opts = {
-    build = {
-      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open a parent directory' })
-    }
-  },
+  -- opts = {
+  --   build = {
+  --     -- vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open a parent directory' })
+  --   }
+  -- },
   dependencies = { "nvim-tree/nvim-web-devicons" },
   config = function()
-    require("oil").setup({
+    local oil = require("oil")
+    oil.setup({
       default_file_explorer = true,
       delete_to_trash = true,
       skip_confirm_for_simple_edits = true,
@@ -15,7 +16,7 @@ return {
         show_hidden = true,
         natural_order = true,
         is_always_hidden = function(name, _)
-          return name == ".." or name == ".git"
+          return name == ".."
         end,
       },
       float = {
@@ -29,8 +30,17 @@ return {
       },
       keymaps = {
         ["<C-c>"] = false,
-        ["q"] = "actions.close",
+        ["-"] = false,
       },
     })
+    vim.keymap.set("n", "-", function()
+      local current_dir = oil.get_current_dir()
+      local project_root = vim.fn.getcwd()
+      if current_dir ~= project_root and current_dir ~= project_root .. "/" then
+        oil.open();
+      else
+        print("Already at project root")
+      end
+    end, { desc = "Open parent directory" })
   end,
 }

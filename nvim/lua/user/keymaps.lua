@@ -43,11 +43,5 @@ vim.keymap.set('n', '<leader>x', ':!open %<cr><cr>')
 -- Disable annoying command line thing.
 vim.keymap.set('n', 'q:', ':q<CR>')
 
--- Resize with arrows.
-vim.keymap.set('n', '<C-S-Up>', ':resize +2<CR>')
-vim.keymap.set('n', '<C-S-Down>', ':resize -2<CR>')
-vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>')
-vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>')
-
 -- redo
 vim.keymap.set('n', 'U', '<C-r>')
