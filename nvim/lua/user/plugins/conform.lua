@@ -11,6 +11,7 @@ return {
         conform.format({
           async = true,
         })
+        print("Formatted.")
       end,
       mode = "",
       desc = "Format current file",

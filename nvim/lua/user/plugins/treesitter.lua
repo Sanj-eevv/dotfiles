@@ -85,10 +85,21 @@ return {
         enable = true,
         lookahead = true,
         keymaps = {
+          -- function
           ['if'] = '@function.inner',
           ['af'] = '@function.outer',
+          -- parameters
           ['ia'] = '@parameter.inner',
           ['aa'] = '@parameter.outer',
+          -- classes
+          ['ic'] = '@class.inner',
+          ['ac'] = '@class.outer',
+          -- Conditionals (if/else)
+          ['ii'] = '@conditional.inner',
+          ['ai'] = '@conditional.outer',
+          -- Loops (for/while)
+          ['il'] = '@loop.inner',
+          ['al'] = '@loop.outer',
         },
       },
     },
