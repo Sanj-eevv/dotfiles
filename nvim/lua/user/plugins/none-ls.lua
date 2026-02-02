@@ -39,6 +39,7 @@ return {
 					null_ls.builtins.completion.tags,
 					null_ls.builtins.diagnostics.todo_comments,
 					null_ls.builtins.diagnostics.trail_space,
+					null_ls.builtins.formatting.shfmt,
 				},
 			})
 		end,

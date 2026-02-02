@@ -9,6 +9,7 @@ return {
 					"ts_ls",
 					"vue_ls",
 					"tailwindcss",
+					"bashls",
 				},
 			})
 		end,

@@ -46,6 +46,7 @@ return {
 			blade = { "blade-formatter" },
 			lua = { "stylua" },
 			tailwind = { "prettierd" },
+			sh = { "shfmt" },
 		},
 	},
 }

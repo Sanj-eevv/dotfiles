@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 DOTFILES="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Neovim
@@ -18,3 +17,14 @@ ln -s $DOTFILES/tmux/tmux.conf $HOME/.tmux.conf
 mkdir -p $HOME/.local/bin
 rm -rf $HOME/.local/bin/t
 ln -s $DOTFILES/scripts/t $HOME/.local/bin/t
+## Commit
+rm -rf $HOME/.local/bin/commit
+ln -s $DOTFILES/scripts/commit $HOME/.local/bin/commit
+
+# Add PATH to zshrc
+touch ~/.zshrc
+PATH_LINE='export PATH="$HOME/.local/bin":$PATH'
+#q = quiet  F = fixed string i.e no regex
+if ! grep -qF "$PATH_LINE" ~/.zshrc; then
+    echo "$PATH_LINE" | cat - ~/.zshrc >/tmp/zshrc.tmp && mv /tmp/zshrc.tmp ~/.zshrc
+fi
