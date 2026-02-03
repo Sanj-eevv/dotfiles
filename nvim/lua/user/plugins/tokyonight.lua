@@ -94,7 +94,7 @@ return {
       -- Spelling
       hl.SpellBad = {
         undercurl = true,
-        sp = '#7F3A43',
+        sp = '#00f720',
       }
 
       -- Telescope
